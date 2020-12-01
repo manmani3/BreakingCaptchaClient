@@ -17,11 +17,13 @@ class windowHandler:
 
         pyautogui.click(okButton[0],okButton[1])
     
-    def findObjectsXY(self, inputImageInf, offset):
+    # Will get list of masks with original input Image
+    def findObjectsXY(self, inputImage, offset):
         objectsXY = []
 
         return objectsXY
 
+    #Maybe hardcode this
     def findOkButton(self, offset):
         okButton = []
         return okButton
