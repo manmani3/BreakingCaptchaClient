@@ -1,3 +1,5 @@
+import pickle
+
 from pynput.keyboard import Listener, Key, KeyCode
 import win32api
 import PIL
@@ -12,6 +14,18 @@ store = set()
 HOT_KEYS = {
     'runBreakingCaptcha': set([Key.alt_l, KeyCode(char='1')])
 }
+
+
+def runBreakingCaptcha():
+    captureScreenShot()
+    sendScreenShot()
+    mask = getInferenceResult()
+
+
+def captureScreenShot():
+    img = ImageGrab.grab()
+    saveas = "screenshot.png"
+    img.save(saveas)
 
 
 def sendScreenShot():
@@ -39,15 +53,24 @@ def sendScreenShot():
     sock.close()
 
 
-def captureScreenShot():
-    img = ImageGrab.grab()
-    saveas = "screenshot.png"
-    img.save(saveas)
+def getInferenceResult():
+    HOST = '127.0.0.1'
+    PORT = 9999
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('', PORT))
+    s.listen(True)
+    print('9999port waiting')
 
+    conn, addr = s.accept()
+    print('Connected by', addr)
 
-def runBreakingCaptcha():
-    captureScreenShot()
-    sendScreenShot()
+    data = conn.recv(4096)
+    data_variable = pickle.loads(data)
+    conn.close()
+    print(data_variable)
+    # Access the information by doing data_variable.process_id or data_variable.task_id etc..,
+    print('Data received from client')
+    return data_variable
 
 
 def handleKeyPress(key):
