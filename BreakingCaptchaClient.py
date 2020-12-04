@@ -1,7 +1,5 @@
 import pickle
-
 from pynput.keyboard import Listener, Key, KeyCode
-import win32api
 import PIL
 from PIL import ImageGrab
 from PIL import Image
@@ -16,10 +14,20 @@ HOT_KEYS = {
 }
 
 
+# socket recive buffer
+def recvall(sock, count):
+    buf = b''
+    while count:
+        newbuf = sock.recv(count)
+        if not newbuf: return None
+        buf += newbuf
+        count -= len(newbuf)
+    return buf
+
+
 def runBreakingCaptcha():
     captureScreenShot()
-    sendScreenShot()
-    mask = getInferenceResult()
+    info = sendImageAndGetInfo()
 
 
 def captureScreenShot():
@@ -28,7 +36,7 @@ def captureScreenShot():
     img.save(saveas)
 
 
-def sendScreenShot():
+def imageToBytes():
     pil_image = PIL.Image.open('screenshot.png').convert('RGB')
     frame = numpy.array(pil_image)
     frame = frame[:, :, ::-1].copy()
@@ -36,41 +44,32 @@ def sendScreenShot():
     encode_param = [int(cv2.IMWRITE_PNG_COMPRESSION), 0]
     result, imgencode = cv2.imencode('.png', frame, encode_param)
     data = numpy.array(imgencode)
-    stringData = data.tobytes()
-    """
-    # Image Test Code
-    decimg = cv2.imdecode(data, 1)
-    cv2.imshow('CLIENT', decimg)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    """
+    return data.tobytes()
+
+
+def sendImageAndGetInfo():
+    data = imageToBytes()
+
     TCP_IP = '15.164.211.141'
-    TCP_PORT = 9999
-    sock = socket.socket()
-    sock.connect((TCP_IP, TCP_PORT))
-    sock.send(str(len(stringData)).ljust(16).encode('utf-8'))
-    sock.send(stringData)
-    sock.close()
+    TCP_PORT = 1234
 
+    s = socket.socket()
+    s.connect((TCP_IP, TCP_PORT))
 
-def getInferenceResult():
-    HOST = '127.0.0.1'
-    PORT = 9999
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', PORT))
-    s.listen(True)
-    print('9999port waiting')
+    s.send(str(len(data)).ljust(16).encode('utf-8'))
+    s.send(data)
 
-    conn, addr = s.accept()
-    print('Connected by', addr)
+    length = recvall(s, 16)
+    r = recvall(s, int(length))
 
-    data = conn.recv(4096)
-    data_variable = pickle.loads(data)
-    conn.close()
-    print(data_variable)
+    r_variable = pickle.loads(r)
+
+    s.close()
+
+    print(r_variable)
     # Access the information by doing data_variable.process_id or data_variable.task_id etc..,
     print('Data received from client')
-    return data_variable
+    return r_variable
 
 
 def handleKeyPress(key):
