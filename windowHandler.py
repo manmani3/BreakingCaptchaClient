@@ -27,11 +27,11 @@ class windowHandler:
                 xy = Bounds[cnt]
                 #print (str(xy))
                 pyautogui.click(int(xy[0]-5+offset[0]),int(xy[1])-5+offset[1]+60)
-                time.sleep(0.5)
+                time.sleep(0.1)
             cnt = cnt + 1
                         
         okButton = self.okButton
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.click(okButton[0]+20,okButton[1]-20)
 
 

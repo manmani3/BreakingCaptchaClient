@@ -73,7 +73,7 @@ def getTitleInfo():
                         print('return title:', name, category, 'offset', leftBottomOffset)
                         return category, leftBottomOffset
 
-    raise Exception('could not find title category')
+    print('could not find title category')
 
 def getButtonInfo():
     import pyautogui as pg
@@ -92,7 +92,7 @@ def getButtonInfo():
                         print('return buttons:', name, category, 'offset', leftBottomOffset)
                         return category,leftBottomOffset
 
-    raise Exception('could not find title category')
+    print('could not find Ok/Next Button')
 
 
 def sendImageAndGetInfo():
@@ -101,7 +101,7 @@ def sendImageAndGetInfo():
     data = imageToBytes()
 
     TCP_IP = '15.164.211.141'
-    TCP_PORT = 1234
+    TCP_PORT = 1237
 
     s = socket.socket()
     s.connect((TCP_IP, TCP_PORT))
