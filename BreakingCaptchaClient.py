@@ -28,8 +28,10 @@ def recvall(sock, count):
 
 def runBreakingCaptcha():
     captureScreenShot()
-    info = sendImageAndGetInfo()
-    w_handler = windowHandler.windowHandler()
+    info, leftBottomOffset = sendImageAndGetInfo()
+    print (leftBottomOffset)
+
+    w_handler = windowHandler.windowHandler(leftBottomOffset)
     w_handler.click(w_handler.checkCell(w_handler.findObjectsXY(info)))
 
 
@@ -98,7 +100,7 @@ def sendImageAndGetInfo():
     print(r_variable)
     # Access the information by doing data_variable.process_id or data_variable.task_id etc..,
     print('Data received from client')
-    return r_variable
+    return r_variable, leftBottomOffset
 
 
 def handleKeyPress(key):
