@@ -3,9 +3,10 @@ import sys, time, os
 
 
 class windowHandler:
-    def __init__(self,offset):
+    def __init__(self,offset, okButton):
         self.iter = 3
         self.offset = offset
+        self.okButton = okButton
         
     def click(self, coords):
         offset = self.offset
@@ -28,12 +29,11 @@ class windowHandler:
                 pyautogui.click(int(xy[0]-5+offset[0]),int(xy[1])-5+offset[1]+60)
                 time.sleep(0.5)
             cnt = cnt + 1
-        time.sleep(1)
-        pyautogui.click(offset[0]+335, offset[1]+ 60 +424)
+                        
+        okButton = self.okButton
+        time.sleep(2)
+        pyautogui.click(okButton[0]+20,okButton[1]-20)
 
-                
-        #okButton = []
-        #okButton = findOkButton()
 
         #pyautogui.click(okButton[0],okButton[1])
         
@@ -85,10 +85,6 @@ class windowHandler:
         test.close
         return objectsXY
 
-    #Maybe hardcode this
-    def findOkButton(self, offset):
-        okButton = []
-        return okButton
 
 
 # Test for clicking window with x,y coords in list format

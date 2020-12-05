@@ -28,10 +28,11 @@ def recvall(sock, count):
 
 def runBreakingCaptcha():
     captureScreenShot()
-    info, leftBottomOffset = sendImageAndGetInfo()
+    info, leftBottomOffset, b_leftBottomOffset = sendImageAndGetInfo()
     print (leftBottomOffset)
+    print (b_leftBottomOffset)
 
-    w_handler = windowHandler.windowHandler(leftBottomOffset)
+    w_handler = windowHandler.windowHandler(leftBottomOffset,b_leftBottomOffset)
     w_handler.click(w_handler.checkCell(w_handler.findObjectsXY(info)))
 
 
@@ -74,9 +75,29 @@ def getTitleInfo():
 
     raise Exception('could not find title category')
 
+def getButtonInfo():
+    import pyautogui as pg
+    from os import listdir
+    from os.path import isfile, join
+    buttonCategories = {'ok': 0, 'next': 1}
+    path = '.\\Buttons\\'
+    for f in listdir(path):
+        if isfile(join(path, f)):
+            buttonImageBox = pg.locateOnScreen(join(path, f), confidence=0.7)
+            if buttonImageBox is not None:
+                leftBottomOffset = (buttonImageBox[0], buttonImageBox[1] + buttonImageBox[3])
+
+                for name, category in buttonCategories.items():
+                    if f.__contains__(name):
+                        print('return buttons:', name, category, 'offset', leftBottomOffset)
+                        return category,leftBottomOffset
+
+    raise Exception('could not find title category')
+
 
 def sendImageAndGetInfo():
     category, leftBottomOffset = getTitleInfo()
+    category_dummy, b_leftBottomOffset = getButtonInfo()
     data = imageToBytes()
 
     TCP_IP = '15.164.211.141'
@@ -100,7 +121,7 @@ def sendImageAndGetInfo():
     print(r_variable)
     # Access the information by doing data_variable.process_id or data_variable.task_id etc..,
     print('Data received from client')
-    return r_variable, leftBottomOffset
+    return r_variable, leftBottomOffset, b_leftBottomOffset
 
 
 def handleKeyPress(key):
