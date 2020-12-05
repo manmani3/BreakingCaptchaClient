@@ -6,6 +6,7 @@ from PIL import Image
 import socket
 import cv2
 import numpy
+import windowHandler
 
 store = set()
 
@@ -28,6 +29,9 @@ def recvall(sock, count):
 def runBreakingCaptcha():
     captureScreenShot()
     info = sendImageAndGetInfo()
+    w_handler = windowHandler.windowHandler()
+    w_handler.click(w_handler.checkCell(w_handler.findObjectsXY(info)))
+
 
 
 def captureScreenShot():
