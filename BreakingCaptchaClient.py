@@ -83,6 +83,8 @@ def sendImageAndGetInfo():
     s = socket.socket()
     s.connect((TCP_IP, TCP_PORT))
 
+    s.send(str(category).ljust(16).encode('utf-8'))
+
     s.send(str(len(data)).ljust(16).encode('utf-8'))
     s.send(data)
 
