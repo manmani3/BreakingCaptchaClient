@@ -51,7 +51,30 @@ def imageToBytes():
     return data.tobytes()
 
 
+def getTitleInfo():
+    import pyautogui as pg
+    from os import listdir
+    from os.path import isfile, join
+
+    titleCategories = {'tauto': 0, 'tbus': 1, 'tcar': 2, 'tcw': 3, 'tgdd': 4, 'tlight': 5, 'tshj': 6, 'tstair': 7}
+
+    path = '.\\Titles\\'
+    for f in listdir(path):
+        if isfile(join(path, f)):
+            titleImageBox = pg.locateOnScreen(join(path, f), confidence=0.7)
+            if titleImageBox is not None:
+                leftBottomOffset = (titleImageBox[0], titleImageBox[1] + titleImageBox[3])
+
+                for name, category in titleCategories.items():
+                    if f.__contains__(name):
+                        print('return title:', name, category, 'offset', leftBottomOffset)
+                        return category, leftBottomOffset
+
+    raise Exception('could not find title category')
+
+
 def sendImageAndGetInfo():
+    category, leftBottomOffset = getTitleInfo()
     data = imageToBytes()
 
     TCP_IP = '15.164.211.141'
