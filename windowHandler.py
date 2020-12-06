@@ -26,13 +26,13 @@ class windowHandler:
             if getCoords > 0:
                 xy = Bounds[cnt]
                 #print (str(xy))
-                pyautogui.click(int(xy[0]-5+offset[0]),int(xy[1])-5+offset[1]+60)
-                time.sleep(0.1)
+                pyautogui.click(int(xy[0]+offset[0]-15),int(xy[1])+offset[1]+75-15)
+                time.sleep(0.4)
             cnt = cnt + 1
                         
         okButton = self.okButton
         time.sleep(3)
-        pyautogui.click(okButton[0]+20,okButton[1]-20)
+        pyautogui.click(offset[0]+320,offset[1]+490)
 
 
         #pyautogui.click(okButton[0],okButton[1])
@@ -58,7 +58,7 @@ class windowHandler:
             coord = coord.split(",")
             for check in Bounds:
                 #if (int(check[0])+offset[0] > int(coord[0])) and (int(check[1])+offset[1]+60 > int(coord[1])):
-                if ( int(coord[0]) > int(check[0]+offset[0]) and int(coord[0]) < int(check[2]+offset[0]) and int(coord[1]) > int(check[1]+offset[1]+60) and int(coord[1]) < int(check[3]+offset[1]+60 )):
+                if ( int(coord[0]) > int(check[0]) and int(coord[0]) < int(check[2]) and int(coord[1]) > int(check[1]) and int(coord[1]) < int(check[3])):
                     Cells[cell] = 1
                 cell = cell + 1
 
