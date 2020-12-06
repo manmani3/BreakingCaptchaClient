@@ -1,4 +1,6 @@
 import pickle
+
+import pyautogui
 from pynput.keyboard import Listener, Key, KeyCode
 import PIL
 from PIL import ImageGrab
@@ -75,6 +77,7 @@ def getTitleInfo():
 
     print('could not find title category')
 
+
 def getButtonInfo():
     import pyautogui as pg
     from os import listdir
@@ -95,9 +98,15 @@ def getButtonInfo():
     print('could not find Ok/Next Button')
 
 
+def reSaveAsCaptchaArea(leftBottomOffset):
+    print('leftBottomOffset', leftBottomOffset)
+    reg = (leftBottomOffset[0], leftBottomOffset[1] + 75, 380, 375)
+    pyautogui.screenshot('screenshot.png', region=reg)
+
 def sendImageAndGetInfo():
     category, leftBottomOffset = getTitleInfo()
     category_dummy, b_leftBottomOffset = getButtonInfo()
+    reSaveAsCaptchaArea(leftBottomOffset)
     data = imageToBytes()
 
     TCP_IP = '15.164.211.141'
