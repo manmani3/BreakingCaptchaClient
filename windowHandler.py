@@ -32,7 +32,7 @@ class windowHandler:
                         
         okButton = self.okButton
         time.sleep(3)
-        pyautogui.click(offset[0]+320,offset[1]+490)
+        pyautogui.click(okButton[0]+20,okButton[1]-20)
 
 
         #pyautogui.click(okButton[0],okButton[1])
