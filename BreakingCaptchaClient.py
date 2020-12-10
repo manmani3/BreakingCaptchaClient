@@ -13,9 +13,16 @@ import windowHandler
 store = set()
 
 HOT_KEYS = {
-    'runBreakingCaptcha': set([Key.alt_l, KeyCode(char='1')])
+    'runBreakingCaptcha': set([Key.alt_l, KeyCode(char='1')]),
+    'clickOkButton': set([Key.alt_r, KeyCode(char='2')])
 }
 
+
+def clickOkButton():
+    print('clickOkButton')
+    matrix, b_leftBottomOffset = getButtonInfo()
+    w_btn_handler = windowHandler.windowHandler([],b_leftBottomOffset, matrix)
+    w_btn_handler.clickButton()
 
 # socket recive buffer
 def recvall(sock, count):
@@ -30,13 +37,13 @@ def recvall(sock, count):
 
 def runBreakingCaptcha():
     captureScreenShot()
-    info, leftBottomOffset, b_leftBottomOffset = sendImageAndGetInfo()
+    info, leftBottomOffset, b_leftBottomOffset, matrix = sendImageAndGetInfo()
     print (leftBottomOffset)
     print (b_leftBottomOffset)
 
-    w_handler = windowHandler.windowHandler(leftBottomOffset,b_leftBottomOffset)
+    w_handler = windowHandler.windowHandler(leftBottomOffset,b_leftBottomOffset, matrix)
     w_handler.click(w_handler.checkCell(w_handler.findObjectsXY(info)))
-
+    runBreakingCaptcha()
 
 
 def captureScreenShot():
@@ -61,7 +68,7 @@ def getTitleInfo():
     from os import listdir
     from os.path import isfile, join
 
-    titleCategories = {'tauto': 0, 'tbus': 1, 'tcar': 2, 'tcw': 3, 'tgdd': 4, 'tlight': 5, 'tshj': 6, 'tstair': 7}
+    titleCategories = {'tauto': 0, 'tbus': 1, 'tcar': 2, 'tcw': 3, 'tgdd': 4, 'tlight': 5, 'tshj': 6, 'tstair': 7, 'tcar2': 2, 'tbike': 8}
 
     path = '.\\Titles\\'
     for f in listdir(path):
@@ -82,7 +89,7 @@ def getButtonInfo():
     import pyautogui as pg
     from os import listdir
     from os.path import isfile, join
-    buttonCategories = {'ok': 0, 'next': 1}
+    buttonCategories = {'ok': 0, 'next':1, 'next2': 2}
     path = '.\\Buttons\\'
     for f in listdir(path):
         if isfile(join(path, f)):
@@ -105,12 +112,12 @@ def reSaveAsCaptchaArea(leftBottomOffset):
 
 def sendImageAndGetInfo():
     category, leftBottomOffset = getTitleInfo()
-    category_dummy, b_leftBottomOffset = getButtonInfo()
+    matrix, b_leftBottomOffset = getButtonInfo()
     reSaveAsCaptchaArea(leftBottomOffset)
     data = imageToBytes()
 
     TCP_IP = '15.164.211.141'
-    TCP_PORT = 1237
+    TCP_PORT = 1238
 
     s = socket.socket()
     s.connect((TCP_IP, TCP_PORT))
@@ -128,9 +135,10 @@ def sendImageAndGetInfo():
     s.close()
 
     print(r_variable)
+    print(len(r_variable['targetInstancesMasks']))
     # Access the information by doing data_variable.process_id or data_variable.task_id etc..,
     print('Data received from client')
-    return r_variable, leftBottomOffset, b_leftBottomOffset
+    return r_variable, leftBottomOffset, b_leftBottomOffset, matrix
 
 
 def handleKeyPress(key):
